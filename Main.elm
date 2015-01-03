@@ -46,11 +46,19 @@ be an empty list (no objects at the start):
 
 ------------------------------------------------------------------------------}
 
-type alias GameState = {}
+type alias Mover = { x:Float, y:Float }
+
+player : Mover
+player =  { x=0, y=0 }
+
+vampire : Mover
+vampire = { x=0, y=0 }
+
+type alias GameState = { player:Mover, vampire:Mover }
 
 defaultGame : GameState
 defaultGame =
-    {}
+    { player=player, vampire=vampire }
 
 
 
