@@ -1,4 +1,5 @@
 import Graphics.Element (..)
+import Graphics.Collage (..)
 import Signal
 import Signal (Signal)
 import Text
@@ -29,30 +30,15 @@ type alias Input =
     }
 
 
+-- Model
 
-{-- Part 2: Model the game ----------------------------------------------------
-
-What information do you need to represent the entire game?
-
-Tasks: Redefine `GameState` to represent your particular game.
-       Redefine `defaultGame` to represent your initial game state.
-
-For example, if you want to represent many objects that just have a position,
-your GameState might just be a list of coordinates and your default game might
-be an empty list (no objects at the start):
-
-    type GameState = { objects : [(Float,Float)] }
-    defaultGame = { objects = [] }
-
-------------------------------------------------------------------------------}
-
-type alias Mover = { x:Float, y:Float }
+type alias Mover = { x:Float, y:Float, image:Element }
 
 player : Mover
-player =  { x=0, y=0 }
+player =  { x=0, y=0, image=image 30 30 "/images/player.png" }
 
 vampire : Mover
-vampire = { x=0, y=0 }
+vampire = { x=100, y=100, image=image 30 30 "/images/vampire.png" }
 
 type alias GameState = { player:Mover, vampire:Mover }
 
@@ -88,7 +74,10 @@ Task: redefine `display` to use the GameState you defined in part 2.
 
 display : (Int,Int) -> GameState -> Element
 display (w,h) gameState =
-    Text.asText gameState
+    collage 400 400
+     [ move (gameState.player.x, gameState.player.y) (toForm gameState.player.image)
+     , move (gameState.vampire.x, gameState.vampire.y) (toForm gameState.vampire.image)
+     ]
 
 
 
