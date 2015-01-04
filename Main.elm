@@ -38,7 +38,7 @@ player : Mover
 player =  { x=0, y=0, image=image 30 30 "images/player.png" }
 
 vampire : Mover
-vampire = { x=100, y=100, image=image 30 30 "/images/vampire.png" }
+vampire = { x=100, y=100, image=image 30 30 "images/vampire.png" }
 
 type alias GameState = { player:Mover, vampire:Mover }
 
