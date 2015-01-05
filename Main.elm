@@ -32,20 +32,27 @@ type alias Input =
 
 -- Model
 
-type alias Mover = { x:Float, y:Float, image:Element }
+type TileType
+    = Empty
+    | Wall
 
-player : Mover
+type alias Mobile = { x:Float, y:Float, image:Element }
+type alias Tile = { x:Float, y:Float, image:Element, tileType:TileType }
+
+player : Mobile
 player =  { x=0, y=0, image=image 30 30 "images/player.png" }
 
-vampire : Mover
+vampire : Mobile
 vampire = { x=100, y=100, image=image 30 30 "images/vampire.png" }
 
-type alias GameState = { player:Mover, vampire:Mover }
+tiles : List Tile
+tiles = []
+
+type alias GameState = { player:Mobile, vampire:Mobile, tiles:List Tile }
 
 defaultGame : GameState
 defaultGame =
-    { player=player, vampire=vampire }
-
+    { player=player, vampire=vampire, tiles=tiles }
 
 
 {-- Part 3: Update the game ---------------------------------------------------
