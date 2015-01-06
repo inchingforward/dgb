@@ -5,6 +5,7 @@ import Signal (Signal)
 import Text
 import Time
 import Window
+import List (..)
 
 {-- Part 1: Model the user input ----------------------------------------------
 
@@ -32,27 +33,46 @@ type alias Input =
 
 -- Model
 
-type TileType
+type GameObjectType
     = Empty
     | Wall
+    | Exit
+    | Player
+    | Vampire
 
-type alias Mobile = { x:Float, y:Float, image:Element }
-type alias Tile = { x:Float, y:Float, image:Element, tileType:TileType }
+type alias GameObject = { x:Float, y:Float, image:Element, kind:GameObjectType }
 
-player : Mobile
-player =  { x=0, y=0, image=image 30 30 "images/player.png" }
+gameObjects : List GameObject
+gameObjects = map (\s -> asciiToTile s 30 30) ["+", ".", "X", "P", "V"]
 
-vampire : Mobile
-vampire = { x=100, y=100, image=image 30 30 "images/vampire.png" }
+asciiToTile : String -> Float -> Float -> GameObject
+asciiToTile ascii x y = 
+    case ascii of
+        "+" -> { x=x, y=y, image=(image 30 30 "images/wall_tile.png"), kind=Wall }
+        "." -> { x=x, y=y, image=(image 30 30 "images/empty_tile.png"), kind=Empty }
+        "X" -> { x=x, y=y, image=(image 30 30 "images/exit_tile.png"), kind=Exit }
+        "P" -> { x=x, y=y, image=(image 30 30 "images/player.png"), kind=Player }
+        "V" -> { x=x, y=y, image=(image 30 30 "images/vampire.png"), kind=Vampire }
 
-tiles : List Tile
-tiles = []
+findGameObject : List GameObject -> GameObjectType -> GameObject
+findGameObject gos got =
+    head (filter (\go -> go.kind == got) gos)
 
-type alias GameState = { player:Mobile, vampire:Mobile, tiles:List Tile }
+player = findGameObject gameObjects Player
+vampire = findGameObject gameObjects Vampire
+exit = findGameObject gameObjects Exit
+tiles = filter (\go -> go.kind == Wall || go.kind == Empty) gameObjects
+
+type alias GameState = 
+    { player:GameObject
+    , vampire:GameObject
+    , exit:GameObject
+    , tiles:List GameObject 
+    }
 
 defaultGame : GameState
 defaultGame =
-    { player=player, vampire=vampire, tiles=tiles }
+    { player=player, vampire=vampire, exit=exit, tiles=tiles }
 
 
 {-- Part 3: Update the game ---------------------------------------------------
