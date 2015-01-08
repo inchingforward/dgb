@@ -54,25 +54,30 @@ asciiToTile ascii x y =
         "P" -> { x=x, y=y, image=(image 30 30 "images/player.png"), kind=Player }
         "V" -> { x=x, y=y, image=(image 30 30 "images/vampire.png"), kind=Vampire }
 
+updatePositions : List GameObject -> List Float -> List GameObject
+updatePositions gos fs =
+    map2 (\go f -> { go | x <- f}) gos fs
+
+objects = updatePositions gameObjects [1.0..(toFloat (length gameObjects))]
+
 findGameObject : List GameObject -> GameObjectType -> GameObject
 findGameObject gos got =
     head (filter (\go -> go.kind == got) gos)
 
-player = findGameObject gameObjects Player
-vampire = findGameObject gameObjects Vampire
-exit = findGameObject gameObjects Exit
-tiles = filter (\go -> go.kind == Wall || go.kind == Empty) gameObjects
+player = findGameObject objects Player
+vampire = findGameObject objects Vampire
+exit = findGameObject objects Exit
 
 type alias GameState = 
     { player:GameObject
     , vampire:GameObject
     , exit:GameObject
-    , tiles:List GameObject 
+    , objects:List GameObject 
     }
 
 defaultGame : GameState
 defaultGame =
-    { player=player, vampire=vampire, exit=exit, tiles=tiles }
+    { player=player, vampire=vampire, exit=exit, objects=objects }
 
 
 {-- Part 3: Update the game ---------------------------------------------------
@@ -88,7 +93,6 @@ Task: redefine `stepGame` to use the UserInput and GameState
 stepGame : Input -> GameState -> GameState
 stepGame {timeDelta,userInput} gameState =
     gameState
-
 
 
 {-- Part 4: Display the game --------------------------------------------------
