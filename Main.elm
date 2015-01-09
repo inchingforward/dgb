@@ -33,6 +33,8 @@ type alias Input =
 
 -- Model
 
+imageDim = 30
+
 type GameObjectType
     = Empty
     | Wall
@@ -43,20 +45,20 @@ type GameObjectType
 type alias GameObject = { x:Float, y:Float, image:Element, kind:GameObjectType }
 
 gameObjects : List GameObject
-gameObjects = map (\s -> asciiToTile s 30 30) ["+", ".", "X", "P", "V"]
+gameObjects = map (\s -> asciiToGameObject s 30 30) ["+", ".", "X", "P", "V"]
 
-asciiToTile : String -> Float -> Float -> GameObject
-asciiToTile ascii x y = 
+asciiToGameObject : String -> Float -> Float -> GameObject
+asciiToGameObject ascii x y = 
     case ascii of
-        "+" -> { x=x, y=y, image=(image 30 30 "images/wall_tile.png"), kind=Wall }
-        "." -> { x=x, y=y, image=(image 30 30 "images/empty_tile.png"), kind=Empty }
-        "X" -> { x=x, y=y, image=(image 30 30 "images/exit_tile.png"), kind=Exit }
-        "P" -> { x=x, y=y, image=(image 30 30 "images/player.png"), kind=Player }
-        "V" -> { x=x, y=y, image=(image 30 30 "images/vampire.png"), kind=Vampire }
+        "+" -> { x=x, y=y, image=(image imageDim imageDim "images/wall_tile.png"), kind=Wall }
+        "." -> { x=x, y=y, image=(image imageDim imageDim "images/empty_tile.png"), kind=Empty }
+        "X" -> { x=x, y=y, image=(image imageDim imageDim "images/exit_tile.png"), kind=Exit }
+        "P" -> { x=x, y=y, image=(image imageDim imageDim "images/player.png"), kind=Player }
+        "V" -> { x=x, y=y, image=(image imageDim imageDim "images/vampire.png"), kind=Vampire }
 
 updatePositions : List GameObject -> List Float -> List GameObject
 updatePositions gos fs =
-    map2 (\go f -> { go | x <- f}) gos fs
+    map2 (\go f -> { go | x <- f * imageDim }) gos fs
 
 objects = updatePositions gameObjects [1.0..(toFloat (length gameObjects))]
 
@@ -106,11 +108,7 @@ Task: redefine `display` to use the GameState you defined in part 2.
 display : (Int,Int) -> GameState -> Element
 display (w,h) gameState =
     collage 400 400
-     [ move (gameState.player.x, gameState.player.y) (toForm gameState.player.image)
-     , move (gameState.vampire.x, gameState.vampire.y) (toForm gameState.vampire.image)
-     ]
-
-
+      (map (\o -> (move (o.x, o.y) (toForm o.image))) gameState.objects)
 
 {-- That's all folks! ---------------------------------------------------------
 
