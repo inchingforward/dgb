@@ -45,8 +45,10 @@ type GameObjectType
 
 type alias GameObject = { x:Float, y:Float, image:Element, kind:GameObjectType }
 
-gameObjects : List GameObject
-gameObjects = map (\s -> toGameObject s 30 30) (String.toList "+.XPV")
+level = """
+P.X
++.V
+"""
 
 toGameObject : Char -> Float -> Float -> GameObject
 toGameObject ch x y = 
@@ -61,15 +63,21 @@ updatePositions : List GameObject -> List Float -> List GameObject
 updatePositions gos fs =
     map2 (\go f -> { go | x <- f * imageDim }) gos fs
 
-objects = updatePositions gameObjects [1.0..(toFloat (length gameObjects))]
-
 findGameObject : List GameObject -> GameObjectType -> GameObject
 findGameObject gos got =
     head (filter (\go -> go.kind == got) gos)
 
-player = findGameObject objects Player
-vampire = findGameObject objects Vampire
-exit = findGameObject objects Exit
+gameObjects : List GameObject
+gameObjects = level
+            |> String.toList
+            |> filter (\s -> not (s == '\n'))
+            |> map (\s -> toGameObject s 30 30)
+            |> (\gos -> updatePositions gos [1.0..(toFloat (length gos))])
+
+-- Individual gameObjects are pulled out to make updating easier.
+player = findGameObject gameObjects Player
+vampire = findGameObject gameObjects Vampire
+exit = findGameObject gameObjects Exit
 
 type alias GameState = 
     { player:GameObject
@@ -80,7 +88,7 @@ type alias GameState =
 
 defaultGame : GameState
 defaultGame =
-    { player=player, vampire=vampire, exit=exit, objects=objects }
+    { player=player, vampire=vampire, exit=exit, objects=gameObjects }
 
 
 {-- Part 3: Update the game ---------------------------------------------------
