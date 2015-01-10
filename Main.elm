@@ -6,6 +6,7 @@ import Text
 import Time
 import Window
 import List (..)
+import String
 
 {-- Part 1: Model the user input ----------------------------------------------
 
@@ -45,16 +46,16 @@ type GameObjectType
 type alias GameObject = { x:Float, y:Float, image:Element, kind:GameObjectType }
 
 gameObjects : List GameObject
-gameObjects = map (\s -> asciiToGameObject s 30 30) ["+", ".", "X", "P", "V"]
+gameObjects = map (\s -> toGameObject s 30 30) (String.toList "+.XPV")
 
-asciiToGameObject : String -> Float -> Float -> GameObject
-asciiToGameObject ascii x y = 
-    case ascii of
-        "+" -> { x=x, y=y, image=(image imageDim imageDim "images/wall_tile.png"), kind=Wall }
-        "." -> { x=x, y=y, image=(image imageDim imageDim "images/empty_tile.png"), kind=Empty }
-        "X" -> { x=x, y=y, image=(image imageDim imageDim "images/exit_tile.png"), kind=Exit }
-        "P" -> { x=x, y=y, image=(image imageDim imageDim "images/player.png"), kind=Player }
-        "V" -> { x=x, y=y, image=(image imageDim imageDim "images/vampire.png"), kind=Vampire }
+toGameObject : Char -> Float -> Float -> GameObject
+toGameObject ch x y = 
+    case ch of
+        '+' -> { x=x, y=y, image=(image imageDim imageDim "images/wall_tile.png"), kind=Wall }
+        '.' -> { x=x, y=y, image=(image imageDim imageDim "images/empty_tile.png"), kind=Empty }
+        'X' -> { x=x, y=y, image=(image imageDim imageDim "images/exit_tile.png"), kind=Exit }
+        'P' -> { x=x, y=y, image=(image imageDim imageDim "images/player.png"), kind=Player }
+        'V' -> { x=x, y=y, image=(image imageDim imageDim "images/vampire.png"), kind=Vampire }
 
 updatePositions : List GameObject -> List Float -> List GameObject
 updatePositions gos fs =
