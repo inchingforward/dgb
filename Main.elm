@@ -34,6 +34,9 @@ type alias Input =
 
 -- Model
 
+-- The world consists of a worldDim x worldDim grid 
+-- of imageDim x imageDim tiles.
+worldDim = 300
 imageDim = 30
 
 type GameObjectType
@@ -50,18 +53,25 @@ P.X
 +.V
 """
 
-toGameObject : Char -> Float -> Float -> GameObject
-toGameObject ch x y = 
+toTileX : Float -> Float
+toTileX tilePosition = (tilePosition * imageDim) - (worldDim / 2 - imageDim / 2)
+
+toTileY : Float -> Float
+toTileY tilePosition = worldDim / 2 - imageDim / 2
+
+toGameObject : Char -> GameObject
+toGameObject ch = 
     case ch of
-        '+' -> { x=x, y=y, image=(image imageDim imageDim "images/wall_tile.png"), kind=Wall }
-        '.' -> { x=x, y=y, image=(image imageDim imageDim "images/empty_tile.png"), kind=Empty }
-        'X' -> { x=x, y=y, image=(image imageDim imageDim "images/exit_tile.png"), kind=Exit }
-        'P' -> { x=x, y=y, image=(image imageDim imageDim "images/player.png"), kind=Player }
-        'V' -> { x=x, y=y, image=(image imageDim imageDim "images/vampire.png"), kind=Vampire }
+        '+' -> { x=0, y=0, image=(image imageDim imageDim "images/wall_tile.png"), kind=Wall }
+        '.' -> { x=0, y=0, image=(image imageDim imageDim "images/empty_tile.png"), kind=Empty }
+        'X' -> { x=0, y=0, image=(image imageDim imageDim "images/exit_tile.png"), kind=Exit }
+        'P' -> { x=0, y=0, image=(image imageDim imageDim "images/player.png"), kind=Player }
+        'V' -> { x=0, y=0, image=(image imageDim imageDim "images/vampire.png"), kind=Vampire }
 
 updatePositions : List GameObject -> List Float -> List GameObject
 updatePositions gos fs =
-    map2 (\go f -> { go | x <- f * imageDim }) gos fs
+    map2 (\go f -> { go | x <- toTileX f
+                        , y <- toTileY f }) gos fs
 
 findGameObject : List GameObject -> GameObjectType -> GameObject
 findGameObject gos got =
@@ -71,8 +81,8 @@ gameObjects : List GameObject
 gameObjects = level
             |> String.toList
             |> filter (\s -> not (s == '\n'))
-            |> map (\s -> toGameObject s 30 30)
-            |> (\gos -> updatePositions gos [1.0..(toFloat (length gos))])
+            |> map (\s -> toGameObject s)
+            |> (\gos -> updatePositions gos [0.0..(toFloat (length gos))])
 
 -- Individual gameObjects are pulled out to make updating easier.
 player = findGameObject gameObjects Player
@@ -116,7 +126,7 @@ Task: redefine `display` to use the GameState you defined in part 2.
 
 display : (Int,Int) -> GameState -> Element
 display (w,h) gameState =
-    collage 400 400
+    collage worldDim worldDim
       (map (\o -> (move (o.x, o.y) (toForm o.image))) gameState.objects)
 
 {-- That's all folks! ---------------------------------------------------------
