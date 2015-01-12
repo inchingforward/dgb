@@ -36,8 +36,14 @@ type alias Input =
 
 -- The world consists of a worldDim x worldDim grid 
 -- of imageDim x imageDim tiles.
+worldDim : Int
 worldDim = 300
+
+imageDim : Int
 imageDim = 30
+
+numTilesInRow : Int
+numTilesInRow = worldDim // imageDim
 
 type GameObjectType
     = Empty
@@ -49,15 +55,23 @@ type GameObjectType
 type alias GameObject = { x:Float, y:Float, image:Element, kind:GameObjectType }
 
 level = """
-P.X
-+.V
+++++++++++
++........+
++........+
++........+
++........+
++P++X+++V+
++........+
++........+
++........+
+++++++++++
 """
 
-toTileX : Float -> Float
-toTileX tilePosition = (tilePosition * imageDim) - (worldDim / 2 - imageDim / 2)
+toTileX : Int -> Float
+toTileX tilePosition = ((toFloat (tilePosition % numTilesInRow)) * (toFloat imageDim)) - ((toFloat worldDim) / 2 - (toFloat imageDim) / 2)
 
-toTileY : Float -> Float
-toTileY tilePosition = worldDim / 2 - imageDim / 2
+toTileY : Int -> Float
+toTileY tilePosition = ((toFloat worldDim) / 2 - (toFloat imageDim) / 2) - (toFloat (tilePosition // numTilesInRow)) * toFloat imageDim
 
 toGameObject : Char -> GameObject
 toGameObject ch = 
@@ -68,7 +82,7 @@ toGameObject ch =
         'P' -> { x=0, y=0, image=(image imageDim imageDim "images/player.png"), kind=Player }
         'V' -> { x=0, y=0, image=(image imageDim imageDim "images/vampire.png"), kind=Vampire }
 
-updatePositions : List GameObject -> List Float -> List GameObject
+updatePositions : List GameObject -> List Int -> List GameObject
 updatePositions gos fs =
     map2 (\go f -> { go | x <- toTileX f
                         , y <- toTileY f }) gos fs
@@ -82,7 +96,7 @@ gameObjects = level
             |> String.toList
             |> filter (\s -> not (s == '\n'))
             |> map (\s -> toGameObject s)
-            |> (\gos -> updatePositions gos [0.0..(toFloat (length gos))])
+            |> (\gos -> updatePositions gos [0..(length gos)])
 
 -- Individual gameObjects are pulled out to make updating easier.
 player = findGameObject gameObjects Player
