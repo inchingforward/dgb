@@ -7,6 +7,7 @@ import Time
 import Window
 import List (..)
 import String
+import Keyboard
 
 {-- Part 1: Model the user input ----------------------------------------------
 
@@ -18,12 +19,11 @@ Task: Redefine `UserInput` to include all of the information you need.
 
 ------------------------------------------------------------------------------}
 
-type alias UserInput = {}
+type alias UserInput = { x : Int, y : Int }
 
 
 userInput : Signal UserInput
-userInput =
-    Signal.constant {}
+userInput = Keyboard.arrows
 
 
 type alias Input =
@@ -125,9 +125,14 @@ Task: redefine `stepGame` to use the UserInput and GameState
 
 ------------------------------------------------------------------------------}
 
-stepGame : Input -> GameState -> GameState
-stepGame {timeDelta,userInput} gameState =
-    gameState
+stepPlayer : GameObject -> GameObject
+stepPlayer player = 
+    { player | x <- 0 
+             , y <- 0 } 
+
+stepGame : UserInput -> GameState -> GameState
+stepGame userInput gameState = 
+    { gameState | player <- stepPlayer player }
 
 
 {-- Part 4: Display the game --------------------------------------------------
@@ -149,19 +154,8 @@ The following code puts it all together and shows it on screen.
 
 ------------------------------------------------------------------------------}
 
-delta : Signal Float
-delta =
-    Time.fps 30
-
-
-input : Signal Input
-input =
-    Signal.sampleOn delta (Signal.map2 Input delta userInput)
-
-
 gameState : Signal GameState
-gameState =
-    Signal.foldp stepGame defaultGame input
+gameState = Signal.foldp stepGame defaultGame Keyboard.arrows
 
 
 main : Signal Element
