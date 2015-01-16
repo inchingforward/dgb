@@ -22,14 +22,14 @@ Task: Redefine `UserInput` to include all of the information you need.
 type alias UserInput = { x : Int, y : Int }
 
 
-userInput : Signal UserInput
-userInput = Keyboard.arrows
+--userInput : Signal UserInput
+--userInput = Keyboard.arrows
 
 
-type alias Input =
-    { timeDelta : Float
-    , userInput : UserInput
-    }
+--type alias Input =
+--    { timeDelta : Float
+--    , userInput : UserInput
+--    }
 
 
 -- Model
@@ -143,8 +143,9 @@ Task: redefine `display` to use the GameState you defined in part 2.
 
 ------------------------------------------------------------------------------}
 
-display : (Int,Int) -> GameState -> Element
-display (w,h) gameState =
+type alias Keys = { x:Int, y:Int }
+display : Keys -> GameState -> Element
+display keys gameState =
     collage worldDim worldDim
       (map (\o -> (move (o.x, o.y) (toForm o.image))) gameState.objects)
 
@@ -157,7 +158,5 @@ The following code puts it all together and shows it on screen.
 gameState : Signal GameState
 gameState = Signal.foldp stepGame defaultGame Keyboard.arrows
 
-
 main : Signal Element
-main =
-    Signal.map2 display Window.dimensions gameState
+main = Signal.map2 display (Signal.sampleOn Keyboard.arrows Keyboard.arrows) gameState
