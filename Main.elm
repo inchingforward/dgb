@@ -9,33 +9,16 @@ import List (..)
 import String
 import Keyboard
 
-{-- Part 1: Model the user input ----------------------------------------------
-
-What information do you need to represent all relevant user input?
-
-Task: Redefine `UserInput` to include all of the information you need.
-      Redefine `userInput` to be a signal that correctly models the user
-      input as described by `UserInput`.
-
-------------------------------------------------------------------------------}
+-- User input model
+-- The only user input required are the directional arrow keys.  They 
+-- are what drives the stepping of the game state.
 
 type alias UserInput = { x : Int, y : Int }
 
-
---userInput : Signal UserInput
---userInput = Keyboard.arrows
-
-
---type alias Input =
---    { timeDelta : Float
---    , userInput : UserInput
---    }
-
-
--- Model
-
+-- Game Model
 -- The world consists of a worldDim x worldDim grid 
--- of imageDim x imageDim tiles.
+-- of imageDim x imageDim GameObjects.
+
 worldDim : Int
 worldDim = 300
 
@@ -115,15 +98,7 @@ defaultGame =
     { player=player, vampire=vampire, exit=exit, objects=gameObjects }
 
 
-{-- Part 3: Update the game ---------------------------------------------------
-
-How does the game step from one state to another based on user input?
-
-Task: redefine `stepGame` to use the UserInput and GameState
-      you defined in parts 1 and 2. Maybe use some helper functions
-      to break up the work, stepping smaller parts of the game.
-
-------------------------------------------------------------------------------}
+-- Update
 
 stepPlayer : GameObject -> GameObject
 stepPlayer player = 
@@ -135,25 +110,13 @@ stepGame userInput gameState =
     { gameState | player <- stepPlayer player }
 
 
-{-- Part 4: Display the game --------------------------------------------------
-
-How should the GameState be displayed to the user?
-
-Task: redefine `display` to use the GameState you defined in part 2.
-
-------------------------------------------------------------------------------}
+-- Display
 
 type alias Keys = { x:Int, y:Int }
 display : Keys -> GameState -> Element
 display keys gameState =
     collage worldDim worldDim
       (map (\o -> (move (o.x, o.y) (toForm o.image))) gameState.objects)
-
-{-- That's all folks! ---------------------------------------------------------
-
-The following code puts it all together and shows it on screen.
-
-------------------------------------------------------------------------------}
 
 gameState : Signal GameState
 gameState = Signal.foldp stepGame defaultGame Keyboard.arrows
