@@ -32,18 +32,32 @@ window.onload = function() {
             return;
         }
         
+        if (game.input.keyboard.isDown(Phaser.Keyboard.UP)) {    
+            movePlayerAndUpdateVampire(player.x, player.y - imageDim);
+        } else if (game.input.keyboard.isDown(Phaser.Keyboard.RIGHT)) {
+            movePlayerAndUpdateVampire(player.x + imageDim, player.y);
+        } else if (game.input.keyboard.isDown(Phaser.Keyboard.DOWN)) {
+            movePlayerAndUpdateVampire(player.x, player.y + imageDim);
+        } else if (game.input.keyboard.isDown(Phaser.Keyboard.LEFT)) {
+            movePlayerAndUpdateVampire(player.x - imageDim, player.y);
+        }
+    }
+    
+    function movePlayerAndUpdateVampire(x, y) {
+        movePlayer(x, y);
+        updateVampire();
+    }
+    
+    function movePlayer(x, y) {
         allowInput = false;
         
-        if (game.input.keyboard.isDown(Phaser.Keyboard.UP)) {    
-            player.y -= imageDim;
-        } else if (game.input.keyboard.isDown(Phaser.Keyboard.RIGHT)) {
-            player.x += imageDim;
-        } else if (game.input.keyboard.isDown(Phaser.Keyboard.DOWN)) {
-            player.y += imageDim;
-        } else if (game.input.keyboard.isDown(Phaser.Keyboard.LEFT)) {
-            player.x -= imageDim;
-        }
+        var tween = game.add.tween(player).to({x: x, y: y}, 500, Phaser.Easing.Linear.None, true);
+        tween.onComplete.add(function() {
+            allowInput = true;
+        });        
+    }
+    
+    function updateVampire() {
         
-        allowInput = true;
     }
 };
