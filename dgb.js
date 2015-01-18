@@ -32,14 +32,18 @@ window.onload = function() {
             return;
         }
         
-        if (game.input.keyboard.isDown(Phaser.Keyboard.UP)) {
-            console.log("up");
+        allowInput = false;
+        
+        if (game.input.keyboard.isDown(Phaser.Keyboard.UP)) {    
+            player.y -= imageDim;
         } else if (game.input.keyboard.isDown(Phaser.Keyboard.RIGHT)) {
-            console.log("right");
+            player.x += imageDim;
         } else if (game.input.keyboard.isDown(Phaser.Keyboard.DOWN)) {
-            console.log("down");
+            player.y += imageDim;
         } else if (game.input.keyboard.isDown(Phaser.Keyboard.LEFT)) {
-            console.log("left");
+            player.x -= imageDim;
         }
+        
+        allowInput = true;
     }
 };
