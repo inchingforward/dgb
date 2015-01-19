@@ -7,7 +7,7 @@ window.onload = function() {
     var player, vampire, exit;
     
     var level = 
-        '...........' + 
+        '............' + 
         '............' + 
         '............' + 
         '............' + 
