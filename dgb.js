@@ -85,11 +85,20 @@ window.onload = function() {
     }
     
     function movePlayerAndUpdateVampire(x, y) {
-        movePlayer(x, y);
-        updateVampire();
+        if (canMovePlayerTo(x, y)) {
+            movePlayer(x, y);
+            updateVampire();    
+        }
     }
     
     function canMovePlayerTo(x, y) {
+        var topOrLeftEdge = 0;
+        var bottomOrRightEdge = (worldDim - imageDim);
+
+        if (x < topOrLeftEdge || y < topOrLeftEdge || x > bottomOrRightEdge || y > bottomOrRightEdge) {
+            return false;
+        }
+        
         return true;
     }
     
