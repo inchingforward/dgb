@@ -94,12 +94,20 @@ window.onload = function() {
     function canMovePlayerTo(x, y) {
         var topOrLeftEdge = 0;
         var bottomOrRightEdge = (worldDim - imageDim);
-
+        
         if (x < topOrLeftEdge || y < topOrLeftEdge || x > bottomOrRightEdge || y > bottomOrRightEdge) {
             return false;
         }
         
-        return true;
+        return getTileAt(x, y) != "+";
+    }
+    
+    function getTileAt(x, y) {
+        var col = Math.floor(x / imageDim);
+        var row = Math.floor(y / imageDim);
+        var tileIndex = numCols * row + col;
+        
+        return level.charAt(tileIndex);
     }
     
     function movePlayer(x, y) {
