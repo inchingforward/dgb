@@ -124,11 +124,21 @@ window.onload = function() {
         
         var tween = game.add.tween(player).to({x: x, y: y}, movementTweenDuration, Phaser.Easing.Linear.None, true);
         tween.onComplete.add(function() {
-            updateVampire();
+            playerMoved();
         });
     }
     
-    function updateVampire() {
+    function levelCompleted() {
+        console.log("You escaped!");
+        // FIXME:  Show escape text, change level.
+    }
+    
+    function playerMoved() {
+        if (player.x == exit.x && player.y == exit.y) {
+            levelCompleted();
+            return;
+        }
+        
         if (player.x == vampire.x && player.y == vampire.y) {
             // The silly player moved onto the vampire's spot.
             vampireMoved();
