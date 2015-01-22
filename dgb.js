@@ -5,6 +5,7 @@ window.onload = function() {
     var game = new Phaser.Game(worldDim, worldDim, Phaser.AUTO, '', { preload: preload, create: create, update: update });
     var allowInput = false;
     var player, vampire, exit;
+    var movementTweenDuration = 250;
     
     var level = 
         '............' + 
@@ -85,13 +86,12 @@ window.onload = function() {
     }
     
     function movePlayerAndUpdateVampire(x, y) {
-        if (canMovePlayerTo(x, y)) {
+        if (canMoveTo(x, y)) {
             movePlayer(x, y);
-            updateVampire();    
         }
     }
     
-    function canMovePlayerTo(x, y) {
+    function canMoveTo(x, y) {
         var topOrLeftEdge = 0;
         var bottomOrRightEdge = (worldDim - imageDim);
         
@@ -113,13 +113,60 @@ window.onload = function() {
     function movePlayer(x, y) {
         allowInput = false;
         
-        var tween = game.add.tween(player).to({x: x, y: y}, 500, Phaser.Easing.Linear.None, true);
+        var tween = game.add.tween(player).to({x: x, y: y}, movementTweenDuration, Phaser.Easing.Linear.None, true);
         tween.onComplete.add(function() {
-            allowInput = true;
-        });        
+            updateVampire();
+        });
     }
     
     function updateVampire() {
+        if (player.x == vampire.x && player.y == vampire.y) {
+            // The silly player moved onto the vampire's spot.
+            return;
+        }
         
+        if (player.x < vampire.x) {
+            if (canMoveTo(vampire.x - imageDim, vampire.y)) {
+                allowInput  = false
+                var tween = game.add.tween(vampire).to({x: vampire.x - imageDim, y: vampire.y}, movementTweenDuration, Phaser.Easing.Linear.None, true);
+                tween.onComplete.add(function() {
+                    allowInput = true;
+                });
+                return;
+            }
+        }
+        
+        if (player.x > vampire.x) {
+            if (canMoveTo(vampire.x + imageDim, vampire.y)) {
+                allowInput  = false
+                var tween = game.add.tween(vampire).to({x: vampire.x + imageDim, y: vampire.y}, movementTweenDuration, Phaser.Easing.Linear.None, true);
+                tween.onComplete.add(function() {
+                    allowInput = true;
+                });
+                return;
+            }
+        }
+        
+        if (player.y < vampire.y) {
+            if (canMoveTo(vampire.x, vampire.y - imageDim)) {
+                allowInput  = false
+                var tween = game.add.tween(vampire).to({x: vampire.x, y: vampire.y - imageDim}, movementTweenDuration, Phaser.Easing.Linear.None, true);
+                tween.onComplete.add(function() {
+                    allowInput = true;
+                });
+                return;
+            }
+        }
+        
+        if (player.y > vampire.y) {
+            if (canMoveTo(vampire.x, vampire.y + imageDim)) {
+                allowInput  = false
+                var tween = game.add.tween(vampire).to({x: vampire.x, y: vampire.y + imageDim}, movementTweenDuration, Phaser.Easing.Linear.None, true);
+                tween.onComplete.add(function() {
+                    allowInput = true;
+                });
+                return;
+            }
+        }
     }
 };
