@@ -91,6 +91,15 @@ window.onload = function() {
         }
     }
     
+    function vampireMoved() {
+        if (vampire.x == player.x && vampire.y == player.y) {
+            console.log("You have been bitten!");
+            // Game Over, Man!
+        } else {
+            allowInput = true;
+        }
+    }
+    
     function canMoveTo(x, y) {
         var topOrLeftEdge = 0;
         var bottomOrRightEdge = (worldDim - imageDim);
@@ -122,6 +131,7 @@ window.onload = function() {
     function updateVampire() {
         if (player.x == vampire.x && player.y == vampire.y) {
             // The silly player moved onto the vampire's spot.
+            vampireMoved();
             return;
         }
         
@@ -130,7 +140,7 @@ window.onload = function() {
                 allowInput  = false
                 var tween = game.add.tween(vampire).to({x: vampire.x - imageDim, y: vampire.y}, movementTweenDuration, Phaser.Easing.Linear.None, true);
                 tween.onComplete.add(function() {
-                    allowInput = true;
+                    vampireMoved();
                 });
                 return;
             }
@@ -141,7 +151,7 @@ window.onload = function() {
                 allowInput  = false
                 var tween = game.add.tween(vampire).to({x: vampire.x + imageDim, y: vampire.y}, movementTweenDuration, Phaser.Easing.Linear.None, true);
                 tween.onComplete.add(function() {
-                    allowInput = true;
+                    vampireMoved();
                 });
                 return;
             }
@@ -152,7 +162,7 @@ window.onload = function() {
                 allowInput  = false
                 var tween = game.add.tween(vampire).to({x: vampire.x, y: vampire.y - imageDim}, movementTweenDuration, Phaser.Easing.Linear.None, true);
                 tween.onComplete.add(function() {
-                    allowInput = true;
+                    vampireMoved();
                 });
                 return;
             }
@@ -163,7 +173,7 @@ window.onload = function() {
                 allowInput  = false
                 var tween = game.add.tween(vampire).to({x: vampire.x, y: vampire.y + imageDim}, movementTweenDuration, Phaser.Easing.Linear.None, true);
                 tween.onComplete.add(function() {
-                    allowInput = true;
+                    vampireMoved();
                 });
                 return;
             }
