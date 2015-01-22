@@ -30,14 +30,12 @@ window.onload = function() {
     }
     
     function create () {
-        game.stage.backgroundColor = '#dddddd';
-        
         createLevel(level);
-        
-        allowInput = true;
     }
     
     function createLevel(level) {
+        allowInput = false;
+        
         for (var i=0; i < level.length; ++i) {
             var row = i % numRows;
             var col = Math.floor(i / numCols);
@@ -50,6 +48,8 @@ window.onload = function() {
         
         player.bringToTop();
         vampire.bringToTop();
+        
+        allowInput = true;
     }
     
     function decodeAndPlaceSprite(str, x, y) {
