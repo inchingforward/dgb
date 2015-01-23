@@ -93,8 +93,7 @@ window.onload = function() {
     
     function vampireMoved() {
         if (vampire.x == player.x && vampire.y == player.y) {
-            console.log("You have been bitten!");
-            // Game Over, Man!
+            game.add.text(30, 50, "You have been bitten!");
         } else {
             allowInput = true;
         }
@@ -129,8 +128,7 @@ window.onload = function() {
     }
     
     function levelCompleted() {
-        console.log("You escaped!");
-        // FIXME:  Show escape text, change level.
+        game.add.text(80, 50, "You escaped!");
     }
     
     function playerMoved() {
