@@ -3,14 +3,34 @@
 <head>
     <meta charset="UTF-8" />
     <title>Don't Get Bitten!</title>
-    <script src="phaser.min.js"></script>
-    <script src="dgb.js"></script>
+    <script src="js/phaser.min.js"></script>
+    <script src="js/boot.js"></script>
+    <script src="js/preload.js"></script>
+    <script src="js/menu.js"></script>
+    <script src="js/game.js"></script>
+    <script src="js/gameover.js"></script>
+    <!--<script src="js/dgb.js"></script>-->
 </head>
 <body>
 
 <noscript>
     <p>JavaScript is required for Don't Get Bitten!</noscript>
 </noscript>
+
+    <script>
+        (function() {
+            var game = new Phaser.Game(360, 360, Phaser.AUTO);
+                        
+            game.state.add("Boot", Boot);
+            game.state.add("Preload", Preload);
+            game.state.add("MainMenu", MainMenu);
+            game.state.add("Game", Game);
+            game.state.add("GameOver", GameOver);
+            
+            game.state.start("Boot");
+        })();
+    </script>
+
 
 </body>
 </html>
