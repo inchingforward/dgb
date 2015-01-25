@@ -86,7 +86,7 @@ Game.prototype = {
     
     vampireMoved: function() {
         if (this.vampire.x == this.player.x && this.vampire.y == this.player.y) {
-            this.game.add.text(30, 50, "You have been bitten!");
+            this.game.state.start("GameOver");
         } else {
             this.allowInput = true;
         }
@@ -115,70 +115,65 @@ Game.prototype = {
         this.allowInput = false;
         
         var tween = this.game.add.tween(this.player).to({x: x, y: y}, this.movementTweenDuration, Phaser.Easing.Linear.None, true);
-        that = this;
-        tween.onComplete.add(function(that) {
-            that.playerMoved();
-        });
+        tween.onComplete.add(function() {
+            if (this.player.x == this.exit.x && this.player.y == this.exit.y) {
+                this.levelCompleted();
+                return;
+            }
+
+            if (this.player.x == this.vampire.x && this.player.y == this.vampire.y) {
+                // The silly player moved onto the vampire's spot.
+                this.vampireMoved();
+                return;
+            }
+            
+            if (this.player.x < this.vampire.x) {
+                if (this.canMoveTo(this.vampire.x - this.imageDim, this.vampire.y)) {
+                    this.allowInput = false
+                    var tween = this.game.add.tween(this.vampire).to({x: this.vampire.x - this.imageDim, y: this.vampire.y}, this.movementTweenDuration, Phaser.Easing.Linear.None, true);
+                    tween.onComplete.add(function() {
+                        this.vampireMoved();
+                    }, this);
+                    return;
+                }
+            }
+
+            if (this.player.x > this.vampire.x) {
+                if (this.canMoveTo(this.vampire.x + this.imageDim, this.vampire.y)) {
+                    this.allowInput = false
+                    var tween = this.game.add.tween(this.vampire).to({x: this.vampire.x + this.imageDim, y: this.vampire.y}, this.movementTweenDuration, Phaser.Easing.Linear.None, true);
+                    tween.onComplete.add(function() {
+                        this.vampireMoved();
+                    }, this);
+                    return;
+                }
+            }
+
+            if (this.player.y < this.vampire.y) {
+                if (this.canMoveTo(this.vampire.x, this.vampire.y - this.imageDim)) {
+                    this.allowInput = false
+                    var tween = this.game.add.tween(this.vampire).to({x: this.vampire.x, y: this.vampire.y - this.imageDim}, this.movementTweenDuration, Phaser.Easing.Linear.None, true);
+                    tween.onComplete.add(function() {
+                        this.vampireMoved();
+                    }, this);
+                    return;
+                }
+            }
+
+            if (this.player.y > this.vampire.y) {
+                if (this.canMoveTo(this.vampire.x, this.vampire.y + this.imageDim)) {
+                    this.allowInput = false
+                    var tween = this.game.add.tween(this.vampire).to({x: this.vampire.x, y: this.vampire.y + this.imageDim}, this.movementTweenDuration, Phaser.Easing.Linear.None, true);
+                    tween.onComplete.add(function() {
+                       this.vampireMoved();
+                    }, this);
+                    return;
+                }
+            }
+        }, this);
     }, 
     
     levelCompleted: function() {
         this.game.add.text(80, 50, "You escaped!");
     }, 
-    
-    playerMoved: function() {
-        if (this.player.x == this.exit.x && this.player.y == this.exit.y) {
-            this.levelCompleted();
-            return;
-        }
-        
-        if (this.player.x == this.vampire.x && this.player.y == this.vampire.y) {
-            // The silly player moved onto the vampire's spot.
-            this.vampireMoved();
-            return;
-        }
-        
-        if (this.player.x < this.vampire.x) {
-            if (this.canMoveTo(this.vampire.x - this.imageDim, this.vampire.y)) {
-                this.allowInput = false
-                var tween = this.game.add.tween(this.vampire).to({x: this.vampire.x - this.imageDim, y: this.vampire.y}, this.movementTweenDuration, Phaser.Easing.Linear.None, true);
-                tween.onComplete.add(function() {
-                    this.vampireMoved();
-                });
-                return;
-            }
-        }
-        
-        if (this.player.x > this.vampire.x) {
-            if (this.canMoveTo(this.vampire.x + this.imageDim, this.vampire.y)) {
-                this.allowInput = false
-                var tween = this.game.add.tween(this.vampire).to({x: this.vampire.x + this.imageDim, y: this.vampire.y}, this.movementTweenDuration, Phaser.Easing.Linear.None, true);
-                tween.onComplete.add(function() {
-                    this.vampireMoved();
-                });
-                return;
-            }
-        }
-        
-        if (this.player.y < this.vampire.y) {
-            if (this.canMoveTo(this.vampire.x, this.vampire.y - this.imageDim)) {
-                this.allowInput = false
-                var tween = this.game.add.tween(this.vampire).to({x: this.vampire.x, y: this.vampire.y - this.imageDim}, this.movementTweenDuration, Phaser.Easing.Linear.None, true);
-                tween.onComplete.add(function() {
-                    this.vampireMoved();
-                });
-                return;
-            }
-        }
-        
-        if (this.player.y > this.vampire.y) {
-            if (this.canMoveTo(this.vampire.x, this.vampire.y + this.imageDim)) {
-                this.allowInput = false
-                var tween = this.game.add.tween(this.vampire).to({x: this.vampire.x, y: this.vampire.y + this.imageDim}, this.movementTweenDuration, Phaser.Easing.Linear.None, true);
-                tween.onComplete.add(function() {
-                   this.vampireMoved();
-                });
-                return;
-            }
-        }
-    }
 };
