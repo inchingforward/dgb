@@ -1,4 +1,4 @@
-Game = function(game) {
+var Game = function(game) {
     this.numRows = this.numCols = 12;
     this.imageDim = 30;
     this.worldDim = this.imageDim * this.numCols;
@@ -86,7 +86,7 @@ Game.prototype = {
     
     vampireMoved: function() {
         if (this.vampire.x == this.player.x && this.vampire.y == this.player.y) {
-            this.game.state.start("GameOver");
+            this.game.state.start("GameOver", true, false, false);
         } else {
             this.allowInput = true;
         }
@@ -174,6 +174,6 @@ Game.prototype = {
     }, 
     
     levelCompleted: function() {
-        this.game.add.text(80, 50, "You escaped!");
+        this.game.state.start("GameOver", true, false, true);
     }, 
 };
