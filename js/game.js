@@ -1,29 +1,15 @@
-var Game = function(game) {
+Game = function(game) {
     this.numRows = this.numCols = 12;
     this.imageDim = 30;
     this.worldDim = this.imageDim * this.numCols;
     this.allowInput = false;
     this.player, this.vampire, this.exit = null;
-    this.movementTweenDuration = 250;    
+    this.movementTweenDuration = 250;
 };
 
 Game.prototype = {
     create: function() {
-        this.level = 
-            '............' + 
-            '............' + 
-            '............' + 
-            '............' + 
-            '............' + 
-            '.P...+....V.' + 
-            '............' + 
-            '............' + 
-            '............' + 
-            '.....X......' + 
-            '............' + 
-            '............';
-            
-        this.createLevel(this.level);
+        this.createLevel(levelManager.currentLevel());
     }, 
     
     createLevel: function(level) {
@@ -108,7 +94,7 @@ Game.prototype = {
         var row = Math.floor(y / this.imageDim);
         var tileIndex = this.numCols * row + col;
         
-        return this.level.charAt(tileIndex);
+        return levelManager.currentLevel().charAt(tileIndex);
     }, 
     
     movePlayer: function(x, y) {
@@ -174,6 +160,12 @@ Game.prototype = {
     }, 
     
     levelCompleted: function() {
-        this.game.state.start("GameOver", true, false, true);
-    }, 
+        if (levelManager.isAtLastLevel()) {
+            console.log("At the last level");
+            this.game.state.start("GameOver", true, false, true);
+        } else {
+            levelManager.advanceLevel();
+            this.game.state.start("Game");
+        }
+    }
 };

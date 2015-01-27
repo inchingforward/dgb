@@ -1,9 +1,7 @@
-var GameOver = function(game) {
-};
+GameOver = function(game) {};
 
 GameOver.prototype = {
     init: function(won) {
-        console.log(won);
         this.won = won;
     }, 
     

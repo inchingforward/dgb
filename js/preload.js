@@ -1,4 +1,4 @@
-var Preload = function(game) {};
+Preload = function(game) {};
 
 Preload.prototype = {
     preload: function() {

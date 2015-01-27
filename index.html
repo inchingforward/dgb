@@ -9,6 +9,7 @@
     <script src="js/menu.js"></script>
     <script src="js/game.js"></script>
     <script src="js/gameover.js"></script>
+    <script src="js/levelmgr.js"></script>
 </head>
 <body>
 
@@ -17,8 +18,11 @@
 </noscript>
 
 <script>
+    var levelManager;
+    
     (function() {
         var game = new Phaser.Game(360, 360, Phaser.AUTO);
+        levelManager = new LevelManager();
                     
         game.state.add("Boot", Boot);
         game.state.add("Preload", Preload);
