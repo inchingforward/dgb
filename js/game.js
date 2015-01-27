@@ -161,7 +161,6 @@ Game.prototype = {
     
     levelCompleted: function() {
         if (levelManager.isAtLastLevel()) {
-            console.log("At the last level");
             this.game.state.start("GameOver", true, false, true);
         } else {
             levelManager.advanceLevel();
