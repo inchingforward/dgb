@@ -4,7 +4,7 @@ Game = function(game) {
     this.worldDim = this.imageDim * this.numCols;
     this.allowInput = false;
     this.player, this.vampire, this.exit = null;
-    this.movementTweenDuration = 250;
+    this.movementTweenDuration = 150;
 };
 
 Game.prototype = {
